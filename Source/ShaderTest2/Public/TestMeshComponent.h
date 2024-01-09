@@ -115,7 +115,7 @@ public:
 				FMeshBatchElement& BatchElement = MeshBatch.Elements[0];
 				MeshBatch.Type = PT_TriangleList;
 				MeshBatch.LODIndex = 0;
-				MeshBatch.VertexFactory = VertexFactory;
+				MeshBatch.VertexFactory = VertexFactory; // 顶点数据
 				MeshBatch.bWireframe = false;
 				UMaterialInterface* Material = Component->GetMaterial(0);
 				if (!Material) {
@@ -123,29 +123,24 @@ public:
 					Component->SetMaterial(0, BaseMaterial);
 				}
 				MeshBatch.MaterialRenderProxy = Component->GetMaterial(0)->GetRenderProxy();
-
-
 				MeshBatch.ReverseCulling = IsLocalToWorldDeterminantNegative();
 				MeshBatch.DepthPriorityGroup = SDPG_World;
 				MeshBatch.bCanApplyViewModeOverrides = false;
 				MeshBatch.CastShadow = false;
 				MeshBatch.CastRayTracedShadow = false;
-
-
-				BatchElement.IndexBuffer = &(VertexFactory->IndexBuffer);
+				BatchElement.IndexBuffer = &(VertexFactory->IndexBuffer); // 索引数据
 				BatchElement.FirstIndex = 0;
-
 				//设定UniformBuffer
 				FDynamicPrimitiveUniformBuffer& DynamicPrimitiveUniformBuffer = Collector.AllocateOneFrameResource<FDynamicPrimitiveUniformBuffer>();
 				DynamicPrimitiveUniformBuffer.Set(GetLocalToWorld(), GetLocalToWorld(), GetBounds(), GetLocalBounds(), true, false, false, false);
 				BatchElement.PrimitiveIdMode = PrimID_FromPrimitiveSceneInfo;
 				BatchElement.PrimitiveUniformBuffer = DynamicPrimitiveUniformBuffer.UniformBuffer.GetUniformBufferRef();
-
 				//设定索引的范围：
 				BatchElement.MinVertexIndex = 0;
 				BatchElement.MaxVertexIndex = VertexFactory->VertexBuffer.NumPoints - 1;
-
 				BatchElement.NumPrimitives = VertexFactory->VertexBuffer.NumPoints / 3;
+				// 实例化渲染
+				BatchElement.NumInstances = 100;
 				Collector.AddMesh(ViewIndex, MeshBatch);
 			}
 		}

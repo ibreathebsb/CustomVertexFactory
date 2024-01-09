@@ -11,6 +11,7 @@ struct FVertexFactoryInput
     float3 Normal : ATTRIBUTE1;
     float4 Color : ATTRIBUTE2;
     uint VertexId : SV_VertexID;
+    uint InstanceId : SV_InstanceID;
 
 };
 
@@ -37,6 +38,7 @@ struct FVertexFactoryIntermediates
 {
     half4 Color;
     float3 Position;
+    uint InstanceId : SV_InstanceID;
 	/** Cached primitive and instance data */
     FSceneDataIntermediates SceneData;
 };
@@ -68,7 +70,7 @@ half3x3 VertexFactoryGetTangentToLocal(FVertexFactoryInput Input, FVertexFactory
 // @return translated world position
 float4 VertexFactoryGetWorldPosition(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates)
 {
-    float4 WorldPosition = TransformLocalToTranslatedWorld(Intermediates.Position);
+    float4 WorldPosition = TransformLocalToTranslatedWorld(Input.Position);
 
     return WorldPosition;
 }
@@ -84,7 +86,10 @@ float4 VertexFactoryGetWorldPosition(FPositionAndNormalOnlyVertexFactoryInput In
 }
 float4 VertexFactoryGetRasterizedWorldPosition(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates, float4 InWorldPosition)
 {
-    return InWorldPosition;
+    float4 Pos = InWorldPosition;
+    Pos.xyz += Input.InstanceId * 100;
+    return Pos;
+    // return InWorldPosition;
 }
 float3 VertexFactoryGetPositionForVertexLighting(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates, float3 TranslatedWorldPosition)
 {

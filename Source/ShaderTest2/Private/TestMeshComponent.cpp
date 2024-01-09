@@ -5,12 +5,12 @@
 
 UTestMeshComponent::UTestMeshComponent()
 {
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Mat(TEXT("Material'/Game/M_Test.M_Test'"));
-	if (Mat.Succeeded())
-	{
-		CustomMaterial = Mat.Object;
-		SetMaterial(0, CustomMaterial);
-	}
+	//static ConstructorHelpers::FObjectFinder<UMaterialInterface> Mat(TEXT("Material'/Game/M_Test.M_Test'"));
+	//if (Mat.Succeeded())
+	//{
+	//	CustomMaterial = Mat.Object;
+	//	SetMaterial(0, CustomMaterial);
+	//}
 }
 
 FPrimitiveSceneProxy* UTestMeshComponent::CreateSceneProxy()

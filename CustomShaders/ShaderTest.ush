@@ -3,9 +3,6 @@
 #include "/Engine/Private/Common.ush"
 #include "/Engine/Private/VertexFactoryCommon.ush"
 
-/*=============================================================================
-	LidarPointCloudVertexFactory.usf: LiDAR Point Cloud vertex factory shader code.
-=============================================================================*/
 float MyValue;
 
 struct FVertexFactoryInput
@@ -14,6 +11,7 @@ struct FVertexFactoryInput
     float3 Normal : ATTRIBUTE1;
     float4 Color : ATTRIBUTE2;
     uint VertexId : SV_VertexID;
+
 };
 
 struct FPositionOnlyVertexFactoryInput
@@ -71,6 +69,7 @@ half3x3 VertexFactoryGetTangentToLocal(FVertexFactoryInput Input, FVertexFactory
 float4 VertexFactoryGetWorldPosition(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates)
 {
     float4 WorldPosition = TransformLocalToTranslatedWorld(Intermediates.Position);
+
     return WorldPosition;
 }
 float4 VertexFactoryGetWorldPosition(FPositionOnlyVertexFactoryInput Input)

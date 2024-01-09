@@ -22,6 +22,7 @@ bool FTestVertexFactory::ShouldCompilePermutation(const FVertexFactoryShaderPerm
 
 void FTestVertexFactory::ModifyCompilationEnvironment(const FVertexFactoryShaderPermutationParameters& Parameters, FShaderCompilerEnvironment& OutEnvironment)
 {
+	OutEnvironment.SetDefine(TEXT("TEST_VERTEX"), 1);
 }
 
 void FTestVertexFactory::InitRHI()
@@ -91,7 +92,7 @@ IMPLEMENT_VERTEX_FACTORY_TYPE(FTestVertexFactory, "/CustomShaders/ShaderTest.ush
 	//| EVertexFactoryFlags::SupportsStaticLighting
 	//| EVertexFactoryFlags::SupportsDynamicLighting
 	//| EVertexFactoryFlags::SupportsPrecisePrevWorldPos
-	//| EVertexFactoryFlags::SupportsPositionOnly
+	| EVertexFactoryFlags::SupportsPositionOnly
 	//| EVertexFactoryFlags::SupportsCachingMeshDrawCommands
 	//| EVertexFactoryFlags::SupportsPrimitiveIdStream
 	//| EVertexFactoryFlags::SupportsRayTracing

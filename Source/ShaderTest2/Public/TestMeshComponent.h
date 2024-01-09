@@ -20,7 +20,6 @@ class SHADERTEST2_API UTestMeshComponent : public UMeshComponent
 public:
 
 
-	// UTestSceneProxy* SceneProxy;
 	UTestMeshComponent();
 	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
 	virtual FBoxSphereBounds CalcBounds(const FTransform& LocalToWorld) const override;
@@ -139,22 +138,14 @@ public:
 				//设定UniformBuffer
 				FDynamicPrimitiveUniformBuffer& DynamicPrimitiveUniformBuffer = Collector.AllocateOneFrameResource<FDynamicPrimitiveUniformBuffer>();
 				DynamicPrimitiveUniformBuffer.Set(GetLocalToWorld(), GetLocalToWorld(), GetBounds(), GetLocalBounds(), true, false, false, false);
-				BatchElement.PrimitiveUniformBufferResource = &DynamicPrimitiveUniformBuffer.UniformBuffer;
-
-				BatchElement.PrimitiveIdMode = PrimID_DynamicPrimitiveShaderData;
-				//BatchElement.DynamicPrimitiveIndex = 0;
+				BatchElement.PrimitiveIdMode = PrimID_FromPrimitiveSceneInfo;
+				BatchElement.PrimitiveUniformBuffer = DynamicPrimitiveUniformBuffer.UniformBuffer.GetUniformBufferRef();
 
 				//设定索引的范围：
-
 				BatchElement.MinVertexIndex = 0;
-				// BatchElement.MaxVertexIndex = VertexFactory->VertexBuffer.NumPoints - 1;
-				BatchElement.MaxVertexIndex = 2;
+				BatchElement.MaxVertexIndex = VertexFactory->VertexBuffer.NumPoints - 1;
 
-				// BatchElement.NumPrimitives = VertexFactory->VertexBuffer.NumPoints / 3;
-				BatchElement.NumPrimitives = 1;
-
-					
-
+				BatchElement.NumPrimitives = VertexFactory->VertexBuffer.NumPoints / 3;
 				Collector.AddMesh(ViewIndex, MeshBatch);
 			}
 		}

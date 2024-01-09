@@ -1,0 +1,134 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/VertexFactoryCommon.ush"
+
+/*=============================================================================
+	LidarPointCloudVertexFactory.usf: LiDAR Point Cloud vertex factory shader code.
+=============================================================================*/
+float MyValue;
+
+struct FVertexFactoryInput
+{
+    float3 Position : ATTRIBUTE0;
+    float3 Normal : ATTRIBUTE1;
+    float4 Color : ATTRIBUTE2;
+    uint VertexId : SV_VertexID;
+};
+
+struct FPositionOnlyVertexFactoryInput
+{
+    float3 Position : ATTRIBUTE0;
+    uint VertexId : SV_VertexID;
+};
+
+struct FPositionAndNormalOnlyVertexFactoryInput
+{
+    float3 Position : ATTRIBUTE0;
+    float3 Normal : ATTRIBUTE1;
+    uint VertexId : SV_VertexID;
+
+};
+
+struct FVertexFactoryInterpolantsVSToPS
+{
+    half4 Color : COLOR0;
+};
+
+struct FVertexFactoryIntermediates
+{
+    half4 Color;
+    float3 Position;
+	/** Cached primitive and instance data */
+    FSceneDataIntermediates SceneData;
+};
+
+
+FVertexFactoryIntermediates GetVertexFactoryIntermediates(FVertexFactoryInput Input)
+{
+    FVertexFactoryIntermediates Intermediates = (FVertexFactoryIntermediates) 0;
+    Intermediates.SceneData = VF_GPUSCENE_GET_INTERMEDIATES(Input);
+    Intermediates.Color = Input.Color;
+    Intermediates.Position = Input.Position;
+    return Intermediates;
+}
+
+FVertexFactoryInterpolantsVSToPS VertexFactoryGetInterpolantsVSToPS(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates, FMaterialVertexParameters VertexParameters)
+{
+    FVertexFactoryInterpolantsVSToPS Interpolants = (FVertexFactoryInterpolantsVSToPS) 0;
+    Interpolants.Color = VertexParameters.VertexColor;
+
+    return Interpolants;
+}
+
+half3x3 VertexFactoryGetTangentToLocal(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates)
+{
+    float3x3 TangentToLocal = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+    return TangentToLocal;
+}
+
+// @return translated world position
+float4 VertexFactoryGetWorldPosition(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates)
+{
+    float4 WorldPosition = TransformLocalToTranslatedWorld(Intermediates.Position);
+    return WorldPosition;
+}
+float4 VertexFactoryGetWorldPosition(FPositionOnlyVertexFactoryInput Input)
+{
+    float4 WorldPosition = TransformLocalToTranslatedWorld(Input.Position.xyz);
+    return WorldPosition;
+}
+float4 VertexFactoryGetWorldPosition(FPositionAndNormalOnlyVertexFactoryInput Input)
+{
+    float4 WorldPosition = TransformLocalToTranslatedWorld(Input.Position.xyz);
+    return WorldPosition;
+}
+float4 VertexFactoryGetRasterizedWorldPosition(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates, float4 InWorldPosition)
+{
+    return InWorldPosition;
+}
+float3 VertexFactoryGetPositionForVertexLighting(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates, float3 TranslatedWorldPosition)
+{
+    return TranslatedWorldPosition;
+}
+float3 VertexFactoryGetWorldNormal(FPositionAndNormalOnlyVertexFactoryInput Input)
+{
+    return float3(0, 0, 1);
+}
+float3 VertexFactoryGetWorldNormal(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates)
+{
+    return float3(0, 0, 1);
+}
+
+// @return previous translated world position
+float4 VertexFactoryGetPreviousWorldPosition(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates)
+{
+    return VertexFactoryGetWorldPosition(Input, Intermediates);
+}
+
+/** Converts from vertex factory specific input to a FMaterialVertexParameters, which is used by vertex shader material inputs. */
+FMaterialVertexParameters GetMaterialVertexParameters(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates, float3 WorldPosition, half3x3 TangentToLocal)
+{
+    FMaterialVertexParameters Result = (FMaterialVertexParameters) 0;
+    Result.SceneData = Intermediates.SceneData;
+    Result.WorldPosition = WorldPosition;
+    Result.TangentToWorld = mul(TangentToLocal, GetLocalToWorld3x3());
+    Result.VertexColor = Intermediates.Color;
+
+
+    return Result;
+}
+
+FMaterialPixelParameters GetMaterialPixelParameters(FVertexFactoryInterpolantsVSToPS Interpolants, float4 SvPosition)
+{
+    FMaterialPixelParameters Result = MakeInitializedMaterialPixelParameters();
+    Result.TwoSidedSign = 1;
+    Result.VertexColor = Interpolants.Color;
+    return Result;
+}
+
+
+
+
+#include "/Engine/Private/VertexFactoryDefaultInterface.ush"
+

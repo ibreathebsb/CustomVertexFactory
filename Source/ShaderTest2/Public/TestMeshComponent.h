@@ -19,7 +19,6 @@ class SHADERTEST2_API UTestMeshComponent : public UMeshComponent
 
 public:
 
-
 	UTestMeshComponent();
 	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
 	virtual FBoxSphereBounds CalcBounds(const FTransform& LocalToWorld) const override;
@@ -62,31 +61,26 @@ public:
 		bVerifyUsedMaterials = false;
 
 		VertexFactory = new FTestVertexFactory(GetScene().GetFeatureLevel());
-		ENQUEUE_RENDER_COMMAND(InitTestData)(
-			[this](FRHICommandListImmediate& RHICmdList)
-			{
-				TArray<FTestData> Points = { {
-					FTestData {
-						FVector3f(0,0,0),
-						FVector3f(0,0,1),
-						FVector4f(1,0,0,1)
-					},
-					FTestData {
-						FVector3f(0,100,0),
-						FVector3f(0,0,1),
-						FVector4f(1,0,0,1)
-					},
-					FTestData {
-						FVector3f(100,0,0),
-						FVector3f(0,0,1),
-						FVector4f(1,0,0,1)
-					},
-				} };
-				TArray<uint32> Indices = { 0, 1, 2 };
-				this->VertexFactory->Initialize(Points, Indices);
-				this->VertexFactory->InitResource();
-			}
-		);
+		TArray<FTestData> Points = { {
+			FTestData {
+				FVector3f(0,0,0),
+				FVector3f(0,0,1),
+				FVector4f(1,0,0,1)
+			},
+			FTestData {
+				FVector3f(0,100,0),
+				FVector3f(0,0,1),
+				FVector4f(0,1,0,1)
+			},
+			FTestData {
+				FVector3f(100,0,0),
+				FVector3f(0,0,1),
+				FVector4f(0,0,1,1)
+			},
+		} };
+		TArray<uint32> Indices = { 0, 1, 2 };
+		VertexFactory->Initialize(Points, Indices);
+		BeginInitResource(VertexFactory);
 	}
 
 
@@ -100,6 +94,12 @@ public:
 		Result.bUsesLightingChannels = false;
 		Result.bRenderCustomDepth = false;
 		Result.bTranslucentSelfShadow = false;
+
+		// 透明渲染相关
+		Result.bOpaque = false;
+		Result.bNormalTranslucency = true;
+		//Result.bSeparateTranslucency = true;
+
 		MaterialRelevance.SetPrimitiveViewRelevance(Result);
 		Result.bVelocityRelevance = IsMovable() && Result.bOpaque && Result.bRenderInMainPass;
 		return Result;
@@ -117,11 +117,6 @@ public:
 				MeshBatch.LODIndex = 0;
 				MeshBatch.VertexFactory = VertexFactory; // 顶点数据
 				MeshBatch.bWireframe = false;
-				UMaterialInterface* Material = Component->GetMaterial(0);
-				if (!Material) {
-					UMaterial* BaseMaterial = UMaterial::GetDefaultMaterial(MD_Surface);
-					Component->SetMaterial(0, BaseMaterial);
-				}
 				MeshBatch.MaterialRenderProxy = Component->GetMaterial(0)->GetRenderProxy();
 				MeshBatch.ReverseCulling = IsLocalToWorldDeterminantNegative();
 				MeshBatch.DepthPriorityGroup = SDPG_World;
@@ -130,6 +125,7 @@ public:
 				MeshBatch.CastRayTracedShadow = false;
 				BatchElement.IndexBuffer = &(VertexFactory->IndexBuffer); // 索引数据
 				BatchElement.FirstIndex = 0;
+
 				//设定UniformBuffer
 				FDynamicPrimitiveUniformBuffer& DynamicPrimitiveUniformBuffer = Collector.AllocateOneFrameResource<FDynamicPrimitiveUniformBuffer>();
 				DynamicPrimitiveUniformBuffer.Set(GetLocalToWorld(), GetLocalToWorld(), GetBounds(), GetLocalBounds(), true, false, false, false);

@@ -12,10 +12,10 @@
 bool FTestVertexFactory::ShouldCompilePermutation(const FVertexFactoryShaderPermutationParameters& Parameters)
 {
 
-	if (Parameters.MaterialParameters.MaterialDomain == MD_UI)
-	{
-		return !!WITH_EDITOR;
-	}
+	//if (Parameters.MaterialParameters.MaterialDomain == MD_UI)
+	//{
+	//	return !!WITH_EDITOR;
+	//}
 
 	return true;
 }

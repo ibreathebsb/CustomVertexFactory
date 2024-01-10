@@ -23,8 +23,8 @@ public:
 	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
 	virtual FBoxSphereBounds CalcBounds(const FTransform& LocalToWorld) const override;
 	UMaterialInterface* CustomMaterial;
-
-
+	// 卧槽 这个居然影响渲染了！
+	virtual int32 GetNumMaterials() const override { return 1; }
 };
 
 class UTestSceneProxy : public FPrimitiveSceneProxy
@@ -88,20 +88,9 @@ public:
 	{
 		FPrimitiveViewRelevance Result;
 		Result.bDrawRelevance = IsShown(View);
-		Result.bShadowRelevance = false;
 		Result.bDynamicRelevance = true;
 		Result.bRenderInMainPass = ShouldRenderInMainPass();
-		Result.bUsesLightingChannels = false;
-		Result.bRenderCustomDepth = false;
-		Result.bTranslucentSelfShadow = false;
-
-		// 透明渲染相关
-		Result.bOpaque = false;
-		Result.bNormalTranslucency = true;
-		//Result.bSeparateTranslucency = true;
-
 		MaterialRelevance.SetPrimitiveViewRelevance(Result);
-		Result.bVelocityRelevance = IsMovable() && Result.bOpaque && Result.bRenderInMainPass;
 		return Result;
 	}
 

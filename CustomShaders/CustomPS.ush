@@ -1,0 +1,7 @@
+// Ê¾Àý
+float4 CustomMainPS(FMaterialPixelParameters Parameters)
+{
+    float4 Out = Parameters.VertexColor;
+    Out.a = Parameters.Test;
+    return Out;
+}

@@ -90,7 +90,7 @@ float4 VertexFactoryGetWorldPosition(FPositionAndNormalOnlyVertexFactoryInput In
 float4 VertexFactoryGetRasterizedWorldPosition(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates, float4 InWorldPosition)
 {
     float4 Pos = InWorldPosition;
-    //TODO: ÊµÀý»¯äÖÈ¾ ¸ù¾ÝÊµÀýidµ÷ÕûÎ»ÖÃ,ÕâÀïÖ»ÊÇdemoÒÆ³ý
+    //TODO: Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½idï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½demoï¿½Æ³ï¿½
     Pos.xyz += Input.InstanceId * 50;
     return Pos;
     // return InWorldPosition;
@@ -135,11 +135,12 @@ FMaterialPixelParameters GetMaterialPixelParameters(FVertexFactoryInterpolantsVS
 {
     FMaterialPixelParameters Result = MakeInitializedMaterialPixelParameters();
     Result.TwoSidedSign = 1;
-    // TODO£º É¾³ýÕâÀï debugÓÃµÄ
+    // TODO remove
     float4 Out = Interpolants.InstanceId % 2 == 0 ? float4(1, 0, 0, 0.8) : float4(0, 1, 0, 0.8);
     // Result.VertexColor = Interpolants.Color;
     // Result.VertexColor = float4(1, 1, 0, 1);
     Result.VertexColor = Out;
+    Result.Test = 0.8;
     return Result;
 }
 

@@ -22,7 +22,8 @@ bool FTestVertexFactory::ShouldCompilePermutation(const FVertexFactoryShaderPerm
 
 void FTestVertexFactory::ModifyCompilationEnvironment(const FVertexFactoryShaderPermutationParameters& Parameters, FShaderCompilerEnvironment& OutEnvironment)
 {
-	OutEnvironment.SetDefine(TEXT("TEST_VERTEX"), 1);
+	// OutEnvironment.SetDefine(TEXT("TEST_VERTEX"), 1);
+
 }
 
 void FTestVertexFactory::InitRHI()

@@ -140,7 +140,7 @@ FMaterialPixelParameters GetMaterialPixelParameters(FVertexFactoryInterpolantsVS
     // Result.VertexColor = Interpolants.Color;
     // Result.VertexColor = float4(1, 1, 0, 1);
     Result.VertexColor = Out;
-    Result.Test = 0.8;
+    // Result.Test = 0.8;
     return Result;
 }
 

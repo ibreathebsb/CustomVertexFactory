@@ -59,6 +59,8 @@ class FTestVertexFactoryShaderParameters : public FVertexFactoryShaderParameters
 public:
 	void Bind(const FShaderParameterMap& ParameterMap)
 	{
+		TArray<FString> Out;
+		ParameterMap.GetAllParameterNames(Out);
 		MyValue.Bind(ParameterMap, TEXT("MyValue"), SPF_Optional);
 	};
 
@@ -76,7 +78,9 @@ public:
 	{
 		const FTestVertexFactory* Factory = ((FTestVertexFactory*)VertexFactory);
 		float Value = Factory->MyValue;
-		ShaderBindings.Add(MyValue, Value);
+
+		//UE_LOG(LogTemp, Display, TEXT("Bind ??? %d"),MyValue.IsBound());
+		ShaderBindings.Add(MyValue, 0.3);
 	};
 	LAYOUT_FIELD(FShaderParameter, MyValue);
 

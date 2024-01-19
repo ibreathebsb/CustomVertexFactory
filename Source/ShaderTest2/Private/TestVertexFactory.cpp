@@ -78,9 +78,7 @@ public:
 	{
 		const FTestVertexFactory* Factory = ((FTestVertexFactory*)VertexFactory);
 		float Value = Factory->MyValue;
-
-		//UE_LOG(LogTemp, Display, TEXT("Bind ??? %d"),MyValue.IsBound());
-		ShaderBindings.Add(MyValue, 0.3);
+		ShaderBindings.Add(MyValue, Value);
 	};
 	LAYOUT_FIELD(FShaderParameter, MyValue);
 
@@ -97,7 +95,7 @@ IMPLEMENT_VERTEX_FACTORY_TYPE(FTestVertexFactory, "/CustomShaders/ShaderTest.ush
 	//| EVertexFactoryFlags::SupportsStaticLighting
 	//| EVertexFactoryFlags::SupportsDynamicLighting
 	//| EVertexFactoryFlags::SupportsPrecisePrevWorldPos
-	| EVertexFactoryFlags::SupportsPositionOnly
+	//| EVertexFactoryFlags::SupportsPositionOnly
 	//| EVertexFactoryFlags::SupportsCachingMeshDrawCommands
 	//| EVertexFactoryFlags::SupportsPrimitiveIdStream
 	//| EVertexFactoryFlags::SupportsRayTracing

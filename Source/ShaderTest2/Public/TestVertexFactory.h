@@ -68,5 +68,5 @@ public:
 	virtual void ReleaseRHI() override;
 	void Initialize(TArray<FTestData> Data, TArray<uint32> Indices);
 
-	float MyValue = 1.0;
+	float MyValue = 0.5f;
 };

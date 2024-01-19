@@ -50,6 +50,9 @@ FVertexFactoryIntermediates GetVertexFactoryIntermediates(FVertexFactoryInput In
     FVertexFactoryIntermediates Intermediates = (FVertexFactoryIntermediates) 0;
     Intermediates.SceneData = VF_GPUSCENE_GET_INTERMEDIATES(Input);
     Intermediates.Color = Input.Color;
+    // Here use our value
+    Intermediates.Color.a = MyValue;
+    
     Intermediates.Position = Input.Position;
     Intermediates.InstanceId = Input.InstanceId;
     return Intermediates;
@@ -123,11 +126,6 @@ FMaterialVertexParameters GetMaterialVertexParameters(FVertexFactoryInput Input,
     Result.TangentToWorld = mul(TangentToLocal, GetLocalToWorld3x3());
     Result.VertexColor = Intermediates.Color;
     
-    // TODO: just for debug. remove this
-    float4 Out = Intermediates.InstanceId % 2 == 0 ? float4(1, 0, 0, 0.8) : float4(0, 1, 0, 0.8);
-    Result.VertexColor = Out;
-
-
     return Result;
 }
 
@@ -135,12 +133,7 @@ FMaterialPixelParameters GetMaterialPixelParameters(FVertexFactoryInterpolantsVS
 {
     FMaterialPixelParameters Result = MakeInitializedMaterialPixelParameters();
     Result.TwoSidedSign = 1;
-    // TODO remove
-    float4 Out = Interpolants.InstanceId % 2 == 0 ? float4(1, 0, 0, 0.8) : float4(0, 1, 0, 0.8);
-    // Result.VertexColor = Interpolants.Color;
-    // Result.VertexColor = float4(1, 1, 0, 1);
-    Result.VertexColor = Out;
-    // Result.Test = 0.8;
+    Result.VertexColor = Interpolants.Color;
     return Result;
 }
 
